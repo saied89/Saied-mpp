@@ -2,7 +2,10 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     kotlin("multiplatform")
+    id("kotlinx-serialization")
 }
+
+val ktor_version = "1.3.0-rc2"
 
 kotlin {
     //select iOS target platform depending on the Xcode environment variables
@@ -24,10 +27,16 @@ kotlin {
 
     sourceSets["commonMain"].dependencies {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-common")
+
+        implementation("io.ktor:ktor-client-core:$ktor_version")
+        implementation("io.ktor:ktor-client-serialization:$ktor_version")
     }
 
     sourceSets["androidMain"].dependencies {
         implementation("org.jetbrains.kotlin:kotlin-stdlib")
+
+        implementation("io.ktor:ktor-client-android:$ktor_version")
+        implementation("io.ktor:ktor-client-serialization-jvm:$ktor_version")
     }
 }
 

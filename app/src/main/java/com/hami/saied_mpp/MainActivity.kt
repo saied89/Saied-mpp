@@ -4,8 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
+import com.jetbrains.handson.mpp.mobile.ApplicationApi
 import com.jetbrains.handson.mpp.mobile.createApplicationScreenMessage
-import com.jetbrains.handson.mpp.mobile.getOnePersion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -17,10 +17,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         lifecycleScope.launch {
-            val name: String = withContext(Dispatchers.IO) {
-                getOnePersion().name
+            ApplicationApi().getOnePerson {
+                findViewById<TextView>(R.id.helloTV).text = it.name
             }
-            findViewById<TextView>(R.id.helloTV).text = name
         }
 
         findViewById<TextView>(R.id.helloTV).text = createApplicationScreenMessage()

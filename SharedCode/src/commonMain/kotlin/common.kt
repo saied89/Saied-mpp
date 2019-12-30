@@ -6,6 +6,7 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.get
 import io.ktor.client.request.url
 import io.ktor.http.URLProtocol
+import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 
 expect fun platformName(): String
@@ -13,29 +14,34 @@ expect fun platformName(): String
 fun createApplicationScreenMessage(): String =
     "Kotlin Rocks on ${platformName()}"
 
-private val client = HttpClient {
-    install(JsonFeature) {
-        serializer = KotlinxSerializer()
-    }
-}
-
 private const val BASE_URL = "https://swapi.co/api/"
 
-suspend fun getOnePersion(): Person = client.get<Person> {
-    url {
-        url(BASE_URL + "people/1")
+internal expect val ApplicationDispatcher: CoroutineDispatcher
+
+private fun <T> callSuspendFun(call: suspend () -> (T)): Deferred<T> =
+    GlobalScope.async {
+        call()
     }
+
+class ApplicationApi {
+    private val client = HttpClient {
+        install(JsonFeature) {
+            serializer = KotlinxSerializer()
+        }
+    }
+
+    fun getOnePerson(callback: (Person) -> Unit) = GlobalScope.launch {
+        val res = client.get<Person> {
+            url {
+                url(BASE_URL + "people/1")
+            }
+        }
+        launch(ApplicationDispatcher) {
+            callback(res)
+        }
+    }
+
 }
-
-
-
-
-data class GetPersonsRes(
-    val count: Int,
-    val next: String,
-    val previous: Any,
-    val results: List<Person>
-)
 
 @Serializable
 data class Person(

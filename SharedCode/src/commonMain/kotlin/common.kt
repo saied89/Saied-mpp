@@ -30,15 +30,13 @@ class ApplicationApi {
         }
     }
 
-    fun getOnePerson(callback: (Person) -> Unit) = GlobalScope.launch {
+    fun getOnePerson(callback: (Person) -> Unit) = GlobalScope.launch(ApplicationDispatcher) {
         val res = client.get<Person> {
             url {
                 url(BASE_URL + "people/1")
             }
         }
-        launch(ApplicationDispatcher) {
-            callback(res)
-        }
+        callback(res)
     }
 
 }

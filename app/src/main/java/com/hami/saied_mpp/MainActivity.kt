@@ -16,8 +16,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        lifecycleScope.launch {
-            ApplicationApi().getOnePerson {
+        ApplicationApi().getOnePerson {
+            lifecycleScope.launch {
                 findViewById<TextView>(R.id.helloTV).text = it.name
             }
         }

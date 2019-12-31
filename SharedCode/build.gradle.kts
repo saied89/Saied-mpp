@@ -27,7 +27,7 @@ kotlin {
 
     sourceSets["iosMain"].dependencies {
         val kotlinx_coroutines_version = "1.3.0"
-        implementation("kotlinx-coroutines-core-native:$kotlinx_coroutines_version")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$kotlinx_coroutines_version")
         implementation("io.ktor:ktor-client-ios:$ktor_version")
         implementation("io.ktor:ktor-client-serialization-native:$ktor_version")
     }
